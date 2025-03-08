@@ -9,7 +9,7 @@ export default function FindABuddy() {
     { id: '3', name: 'Emma', location: 'Arc', trainingFocus: 'Arms', image: 'https://via.placeholder.com/100' },
     { id: '4', name: 'bob the builder', location: 'Arc', trainingFocus: 'Back', image: 'https://via.placeholder.com/100' },
   ]);
-
+//
   const [currentBuddyIndex, setCurrentBuddyIndex] = useState(0);
   const [isEndOfList, setIsEndOfList] = useState(false);
   const [matchedBuddy, setMatchedBuddy] = useState(null); // To track matched buddy
