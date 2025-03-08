@@ -1,3 +1,4 @@
+import { Stack } from 'expo-router';
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
@@ -19,17 +20,22 @@ export default function GymStatusScreen() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>🏋️ Arc Status</Text>
-      <View style={styles.statusBox}>
-        <Text style={styles.statusText}>{status}</Text>
-      </View>
-      <Text style={styles.updatedText}>Last Updated: {lastUpdated}</Text>
+    <>
+      {/* ✅ Set Custom Title Here */}
+      <Stack.Screen options={{ title: '📊 Gym Status' }} />
 
-      <TouchableOpacity style={styles.refreshButton} onPress={getGymStatus}>
-        <Text style={styles.buttonText}>🔄 Refresh Status</Text>
-      </TouchableOpacity>
-    </View>
+      <View style={styles.container}>
+        <Text style={styles.title}>🏋️ Arc Status</Text>
+        <View style={styles.statusBox}>
+          <Text style={styles.statusText}>{status}</Text>
+        </View>
+        <Text style={styles.updatedText}>Last Updated: {lastUpdated}</Text>
+
+        <TouchableOpacity style={styles.refreshButton} onPress={getGymStatus}>
+          <Text style={styles.buttonText}>🔄 Refresh Status</Text>
+        </TouchableOpacity>
+      </View>
+    </>
   );
 }
 

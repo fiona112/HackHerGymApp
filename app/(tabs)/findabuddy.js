@@ -1,3 +1,4 @@
+import { Stack } from 'expo-router';
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, Image, Animated, PanResponder } from 'react-native';
 
@@ -16,11 +17,9 @@ export default function FindABuddy() {
   const [message, setMessage] = useState(''); // To store the message input
   const [messages, setMessages] = useState([]); // To store sent messages for the matched buddy
 
-  // Gesture recognition for swipe
-  const pan = new Animated.ValueXY(); // Tracks movement
+  const pan = new Animated.ValueXY();
 
   const handleSwipe = (direction) => {
-    // Prevent swipe action if no buddies left
     if (isEndOfList) {
       Alert.alert('No More Buddies', 'You have swiped through all the gym buddies!');
       return;
@@ -36,11 +35,12 @@ export default function FindABuddy() {
 
     if (currentBuddyIndex + 1 >= buddies.length) {
       setIsEndOfList(true);
+      setIsEndOfList(true);
     } else {
       setCurrentBuddyIndex(currentBuddyIndex + 1);
     }
 
-    pan.setValue({ x: 0, y: 0 }); // Reset pan after swipe
+    pan.setValue({ x: 0, y: 0 });
   };
 
   const handlePanResponderMove = Animated.event([null, { dx: pan.x, dy: pan.y }], { useNativeDriver: false });
@@ -48,7 +48,9 @@ export default function FindABuddy() {
   const handlePanResponderRelease = (e, gestureState) => {
     if (gestureState.dx > 150) {
       handleSwipe('right');
+      handleSwipe('right');
     } else if (gestureState.dx < -150) {
+      handleSwipe('left');
       handleSwipe('left');
     } else {
       Animated.spring(pan, { toValue: { x: 0, y: 0 }, useNativeDriver: true }).start();
@@ -172,13 +174,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffe6f2',
     justifyContent: 'center', 
     alignItems: 'center',
+    alignItems: 'center',
   },
   title: {
+    fontSize: 42,
+    fontWeight: '600',
     fontSize: 42,
     fontWeight: '600',
     color: '#ff4d94',
     textAlign: 'center',
     marginBottom: 30,
+    fontFamily: 'Poppins',
     fontFamily: 'Poppins',
   },
   buddyItem: {
@@ -196,16 +202,22 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
+    alignItems: 'center',
   },
   buddyInfo: { 
     flex: 1, 
     marginLeft: 20, 
     alignItems: 'center',
+    alignItems: 'center',
   },
   buddyText: {
     fontSize: 22,
     fontWeight: '500',
+    fontSize: 22,
+    fontWeight: '500',
     color: '#d6336c',
+    fontFamily: 'Poppins',
+    textAlign: 'center',
     fontFamily: 'Poppins',
     textAlign: 'center',
     marginBottom: 10,
@@ -214,6 +226,7 @@ const styles = StyleSheet.create({
 
   buttonsContainer: { 
     flexDirection: 'row', 
+    justifyContent: 'center',
     justifyContent: 'center',
     marginTop: 30,
   },
