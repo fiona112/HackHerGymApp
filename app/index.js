@@ -5,7 +5,7 @@ export default function HomeScreen() {
   const router = useRouter();
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>🏋️ Gym Tracker</Text>
+      <Text style={{ fontSize: 40, fontWeight: 'bold', textAlign: 'center' }}>🏋️ Gym Tracker</Text>
       <Button title="Workout Planner" onPress={() => router.push('/workoutplanner')} />
       <Button title="Find A Buddy" onPress={() => router.push('/findabuddy')} />
       <Button title="Goals" onPress={() => router.push('/goals')} />
