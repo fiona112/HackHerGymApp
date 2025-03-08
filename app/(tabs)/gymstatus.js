@@ -137,7 +137,7 @@ export default function GymStatusScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#ffe6f2', padding: 20 },
-  title: { fontSize: 28, fontWeight: 'bold', color: '#ff4d94', textAlign: 'center', marginBottom: 20 },
+  title: { fontSize: 28, fontWeight: 'bold', color: '#ff4d94', textAlign: 'center', marginBottom: 20, marginTop: 50},
   statusBox: { backgroundColor: '#ffcce6', padding: 20, borderRadius: 20, marginBottom: 10 },
   statusText: { fontSize: 22, fontWeight: 'bold', color: '#d6336c', textAlign: 'center' },
   updatedText: { fontSize: 14, color: 'gray', marginBottom: 15 },
