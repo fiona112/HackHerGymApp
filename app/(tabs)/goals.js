@@ -4,17 +4,17 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert } from 'react
 
 export default function GoalsScreen() {
   const [goals, setGoals] = useState([
-    { id: '1', text: 'Drink 2L of Water 💧', completed: false, points: 10 },
-    { id: '2', text: 'Eat Three Healthy Meals 🥗', completed: false, points: 15 },
-    { id: '3', text: 'Exercise for 30 Minutes 🏋️‍♀️', completed: false, points: 20 },
+    { id: '1', text: 'Drink 2L of Water 💧', completed: false, points: 5 },
+    { id: '2', text: 'Eat Three Healthy Meals 🥗', completed: false, points: 10 },
+    { id: '3', text: 'Exercise for 30 Minutes 🏋️‍♀️', completed: false, points: 10 },
     { id: '4', text: 'Sleep 8 Hours 😴', completed: false, points: 10 },
   ]);
 
   const [leaderboard, setLeaderboard] = useState([
     { id: '1', name: 'You', points: 0 },
-    { id: '2', name: 'Alex', points: 50 },
-    { id: '3', name: 'Jamie', points: 40 },
-    { id: '4', name: 'Taylor', points: 30 },
+    { id: '2', name: 'Hailey', points: 15 },
+    { id: '3', name: 'Fiona', points: 5 },
+    { id: '4', name: 'Emma', points: 20 },
   ]);
 
   const completeGoal = (goalId, goalPoints) => {

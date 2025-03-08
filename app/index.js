@@ -15,10 +15,19 @@ export default function HomeScreen() {
         style={styles.background}
       >
         <View style={styles.overlay}>
+          {/* BIG LOGIN/REGISTER BUTTON */}
+          <TouchableOpacity style={styles.loginButton} onPress={() => router.push('/loginscreen')}>
+            <Text style={styles.loginButtonText}>🔐 Login / Register</Text>
+          </TouchableOpacity>
+
           <Text style={styles.title}>💖 Gym Tracker</Text>
 
           <TouchableOpacity style={styles.button} onPress={() => router.push('/workoutplanner')}>
             <Text style={styles.buttonText}>📋 Workout Planner</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.button} onPress={() => router.push('/workouttracker')}>
+            <Text style={styles.buttonText}>📅 Workout Tracker</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.button} onPress={() => router.push('/findabuddy')}>
@@ -47,7 +56,7 @@ const styles = StyleSheet.create({
   
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(255, 192, 203, 0.6)',
+    backgroundColor: 'rgba(255, 192, 203, 0.85)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
@@ -63,6 +72,27 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 0.2)',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 3,
+  },
+
+  loginButton: {
+    backgroundColor: '#ff4d94',
+    paddingVertical: 20,
+    paddingHorizontal: 40,
+    borderRadius: 30,
+    marginBottom: 30,
+    width: '90%',
+    alignItems: 'center',
+    shadowColor: '#ff4d94',
+    shadowOffset: { width: 2, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+
+  loginButtonText: {
+    color: '#ffffff',
+    fontSize: 22,
+    fontWeight: 'bold',
   },
 
   button: {
