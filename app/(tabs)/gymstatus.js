@@ -1,3 +1,4 @@
+import { Stack } from 'expo-router';
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
@@ -7,7 +8,7 @@ export default function GymStatusScreen() {
 
   // Mock function to get gym status (this can later be replaced with an API call)
   const getGymStatus = () => {
-    const statuses = ['Not Busy 🩷', 'Moderate 💛', 'Busy 💚'];
+    const statuses = ['Not Busy 🩷', 'Moderate 💛', 'Busy ❤️'];
     const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
     setStatus(randomStatus);
     setLastUpdated(new Date().toLocaleTimeString());
@@ -19,17 +20,22 @@ export default function GymStatusScreen() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>🏋️ Arc Status</Text>
-      <View style={styles.statusBox}>
-        <Text style={styles.statusText}>{status}</Text>
-      </View>
-      <Text style={styles.updatedText}>Last Updated: {lastUpdated}</Text>
+    <>
+      {/* ✅ Set Custom Title Here */}
+      <Stack.Screen options={{ title: '📊 Gym Status' }} />
 
-      <TouchableOpacity style={styles.refreshButton} onPress={getGymStatus}>
-        <Text style={styles.buttonText}>🔄 Refresh Status</Text>
-      </TouchableOpacity>
-    </View>
+      <View style={styles.container}>
+        <Text style={styles.title}>🏋️ Arc Status</Text>
+        <View style={styles.statusBox}>
+          <Text style={styles.statusText}>{status}</Text>
+        </View>
+        <Text style={styles.updatedText}>Last Updated: {lastUpdated}</Text>
+
+        <TouchableOpacity style={styles.refreshButton} onPress={getGymStatus}>
+          <Text style={styles.buttonText}>🔄 Refresh Status</Text>
+        </TouchableOpacity>
+      </View>
+    </>
   );
 }
 

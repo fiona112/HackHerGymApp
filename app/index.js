@@ -1,3 +1,4 @@
+import { Stack } from 'expo-router';
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -6,30 +7,34 @@ export default function HomeScreen() {
   const router = useRouter();
 
   return (
-    <ImageBackground
-      source={{ uri: 'https://images.unsplash.com/photo-1576678927484-cc9079570885' }} // Soft pink aesthetic gym image
-      style={styles.background}
-    >
-      <View style={styles.overlay}>
-        <Text style={styles.title}>💖 Gym Tracker</Text>
+    <>
+      <Stack.Screen options={{ title: '💖 Gym Tracker' }} />
 
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/workoutplanner')}>
-          <Text style={styles.buttonText}>📋 Workout Planner</Text>
-        </TouchableOpacity>
+      <ImageBackground
+        source={{ uri: 'https://images.unsplash.com/photo-1576678927484-cc9079570885' }}
+        style={styles.background}
+      >
+        <View style={styles.overlay}>
+          <Text style={styles.title}>💖 Gym Tracker</Text>
 
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/findabuddy')}>
-          <Text style={styles.buttonText}>🤝 Find A Buddy</Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => router.push('/workoutplanner')}>
+            <Text style={styles.buttonText}>📋 Workout Planner</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/goals')}>
-          <Text style={styles.buttonText}>🎯 Goals</Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => router.push('/findabuddy')}>
+            <Text style={styles.buttonText}>🤝 Find A Buddy</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/gymstatus')}>
-          <Text style={styles.buttonText}>📊 Gym Status</Text>
-        </TouchableOpacity>
-      </View>
-    </ImageBackground>
+          <TouchableOpacity style={styles.button} onPress={() => router.push('/goals')}>
+            <Text style={styles.buttonText}>🎯 Goals</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.button} onPress={() => router.push('/gymstatus')}>
+            <Text style={styles.buttonText}>📊 Gym Status</Text>
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>
+    </>
   );
 }
 
@@ -42,17 +47,17 @@ const styles = StyleSheet.create({
   
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(255, 192, 203, 0.6)', // Soft pink glassy overlay
+    backgroundColor: 'rgba(255, 192, 203, 0.6)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    borderRadius: 20, // Rounded overlay effect
+    borderRadius: 20,
   },
 
   title: {
     fontSize: 45,
     fontWeight: 'bold',
-    color: '#ff4d94', // Bright pink
+    color: '#ff4d94',
     marginBottom: 30,
     textAlign: 'center',
     textShadowColor: 'rgba(0, 0, 0, 0.2)',
@@ -61,7 +66,7 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor: '#ff99c8', // Light pink pastel button
+    backgroundColor: '#ff99c8',
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 30,

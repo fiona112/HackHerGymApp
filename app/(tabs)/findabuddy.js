@@ -1,3 +1,4 @@
+import { Stack } from 'expo-router';
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, Image, Animated, PanResponder } from 'react-native';
 
@@ -13,42 +14,37 @@ export default function FindABuddy() {
   const [currentBuddyIndex, setCurrentBuddyIndex] = useState(0);
   const [isEndOfList, setIsEndOfList] = useState(false); // State to track if we are at the end of the list
 
-  // Gesture recognition for swipe
-  const pan = new Animated.ValueXY(); // Tracks movement
+  const pan = new Animated.ValueXY();
 
   const handleSwipe = (direction) => {
-    // Prevent swipe action if no buddies left
     if (isEndOfList) {
       Alert.alert('No More Buddies', 'You have swiped through all the gym buddies!');
       return;
     }
 
-    // Update the state based on swipe direction
     if (direction === 'right') {
       Alert.alert('Buddy Liked 💖', `You liked ${buddies[currentBuddyIndex].name}!`);
     } else if (direction === 'left') {
       Alert.alert('Buddy Disliked 💔', `You disliked ${buddies[currentBuddyIndex].name}!`);
     }
 
-    // Move to next buddy after swipe
     if (currentBuddyIndex + 1 >= buddies.length) {
-      setIsEndOfList(true); // Set end of list flag
+      setIsEndOfList(true);
     } else {
       setCurrentBuddyIndex(currentBuddyIndex + 1);
     }
 
-    pan.setValue({ x: 0, y: 0 }); // Reset pan after swipe
+    pan.setValue({ x: 0, y: 0 });
   };
 
   const handlePanResponderMove = Animated.event([null, { dx: pan.x, dy: pan.y }], { useNativeDriver: false });
 
   const handlePanResponderRelease = (e, gestureState) => {
     if (gestureState.dx > 150) {
-      handleSwipe('right'); // Right swipe (like)
+      handleSwipe('right');
     } else if (gestureState.dx < -150) {
-      handleSwipe('left'); // Left swipe (dislike)
+      handleSwipe('left');
     } else {
-      // Reset position if not swiped far enough
       Animated.spring(pan, { toValue: { x: 0, y: 0 }, useNativeDriver: true }).start();
     }
   };
@@ -59,7 +55,6 @@ export default function FindABuddy() {
     onPanResponderRelease: handlePanResponderRelease,
   });
 
-  // Render the current gym buddy
   const renderBuddy = () => {
     const buddy = buddies[currentBuddyIndex];
     if (!buddy) return null;
@@ -89,27 +84,32 @@ export default function FindABuddy() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Find a Gym Buddy 💖</Text>
-      {renderBuddy()}
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity
-          style={[styles.dislikeButton, isEndOfList && styles.disabledButton]}
-          onPress={() => handleSwipe('left')}
-          disabled={isEndOfList}
-        >
-          <Text style={styles.buttonText}>Dislike</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.likeButton, isEndOfList && styles.disabledButton]}
-          onPress={() => handleSwipe('right')}
-          disabled={isEndOfList}
-        >
-          <Text style={styles.buttonText}>Like</Text>
-        </TouchableOpacity>
+    <>
+      {/* ✅ Set Custom Header Title */}
+      <Stack.Screen options={{ title: '🤝 Find A Gym Buddy' }} />
+
+      <View style={styles.container}>
+        <Text style={styles.title}>Find a Gym Buddy 💖</Text>
+        {renderBuddy()}
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity
+            style={[styles.dislikeButton, isEndOfList && styles.disabledButton]}
+            onPress={() => handleSwipe('left')}
+            disabled={isEndOfList}
+          >
+            <Text style={styles.buttonText}>Dislike</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.likeButton, isEndOfList && styles.disabledButton]}
+            onPress={() => handleSwipe('right')}
+            disabled={isEndOfList}
+          >
+            <Text style={styles.buttonText}>Like</Text>
+          </TouchableOpacity>
+        </View>
+        {isEndOfList && <Text style={styles.endText}>No more gym buddies to show!</Text>}
       </View>
-      {isEndOfList && <Text style={styles.endText}>No more gym buddies to show!</Text>}
-    </View>
+    </>
   );
 }
 
@@ -119,15 +119,15 @@ const styles = StyleSheet.create({
     padding: 20, 
     backgroundColor: '#ffe6f2',
     justifyContent: 'center', 
-    alignItems: 'center', // Centers the content both vertically and horizontally
+    alignItems: 'center',
   },
   title: {
-    fontSize: 42, // Larger font size for a more prominent title
-    fontWeight: '600', // Lighter font weight for a sleek look
+    fontSize: 42,
+    fontWeight: '600',
     color: '#ff4d94',
     textAlign: 'center',
     marginBottom: 30,
-    fontFamily: 'Poppins', // Using Poppins for an aesthetic look
+    fontFamily: 'Poppins',
   },
 
   buddyItem: {
@@ -144,20 +144,20 @@ const styles = StyleSheet.create({
     width: '90%',
     alignSelf: 'center',
     justifyContent: 'center',
-    alignItems: 'center', // Centers the buddy content
+    alignItems: 'center',
   },
 
   buddyInfo: { 
     flex: 1, 
     marginLeft: 20, 
-    alignItems: 'center', // Centers text in buddy info
+    alignItems: 'center',
   },
   buddyText: {
-    fontSize: 22, // Bigger font size for buddy text
-    fontWeight: '500', // Slightly lighter weight for aesthetic feel
+    fontSize: 22,
+    fontWeight: '500',
     color: '#d6336c',
-    fontFamily: 'Poppins', // Aesthetic font family for the buddy text
-    textAlign: 'center', // Center text
+    fontFamily: 'Poppins',
+    textAlign: 'center',
     marginBottom: 10,
   },
 
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
 
   buttonsContainer: { 
     flexDirection: 'row', 
-    justifyContent: 'center', // Center the buttons horizontally
+    justifyContent: 'center',
     marginTop: 30,
   },
   likeButton: { 
