@@ -6,6 +6,7 @@ import { useRouter } from 'expo-router';
 
 export default function LoginScreen() {
   const router = useRouter();
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isRegister, setIsRegister] = useState(false);
@@ -17,8 +18,8 @@ export default function LoginScreen() {
       return;
     }
 
-    if (email === '' || password.length < 6) {
-      setErrorMessage('Email is required & password must be at least 6 characters');
+    if (email === '' || password.length < 6 || (isRegister && name.trim() === '')) {
+      setErrorMessage('All fields are required & password must be at least 6 characters.');
       return;
     }
 
@@ -32,7 +33,10 @@ export default function LoginScreen() {
         }
 
         // Save user credentials
-        await AsyncStorage.setItem(email, JSON.stringify({ email, password }));
+        await AsyncStorage.setItem(email, JSON.stringify({ name, email, password }));
+        await AsyncStorage.setItem('userEmail', email);
+        await AsyncStorage.setItem('userName', name);
+
         alert('Account created! 🎉');
       } else {
         // Check if user exists & login
@@ -48,7 +52,11 @@ export default function LoginScreen() {
           return;
         }
 
-        alert('Logged in successfully ✅');
+        // Store session data
+        await AsyncStorage.setItem('userEmail', email);
+        await AsyncStorage.setItem('userName', userData.name);
+
+        alert(`Logged in successfully ✅ Welcome, ${userData.name}!`);
         router.push('/'); // Navigate to home after login
       }
 
@@ -60,13 +68,22 @@ export default function LoginScreen() {
 
   return (
     <>
-      {/* ✅ Add Header for Login/Register Page */}
       <Stack.Screen options={{ title: '🔐 Login / Register' }} />
 
       <View style={styles.container}>
         <Text style={styles.title}>{isRegister ? 'Create Account' : 'Welcome Back'}</Text>
 
         {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
+
+        {isRegister && (
+          <TextInput
+            style={styles.input}
+            placeholder="Your Name"
+            placeholderTextColor="#ff4d94"
+            value={name}
+            onChangeText={setName}
+          />
+        )}
 
         <TextInput
           style={styles.input}
