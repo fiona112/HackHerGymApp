@@ -81,6 +81,11 @@ export default function HomeScreen() {
           <Text style={styles.buttonText}>📊 Gym Status</Text>
         </TouchableOpacity>
 
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/mealtrack')}>
+          <Text style={styles.buttonText}>🍔 Meal Tracker</Text>
+        </TouchableOpacity>
+
+
         {userName && (
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <Text style={styles.logoutButtonText}>🚪 Logout</Text>
