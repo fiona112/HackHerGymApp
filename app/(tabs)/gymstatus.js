@@ -11,7 +11,7 @@ export default function GymStatusScreen() {
   const [hours, setHours] = useState([]);
 
   const getGymStatus = () => {
-    const statuses = ['Not Busy 🩷', 'Moderate 💛', 'Busy 💚'];
+    const statuses = ['Not Busy 💚', 'Moderate 💛', 'Busy 💔'];
     const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
     setStatus(randomStatus);
     setLastUpdated(new Date().toLocaleTimeString());

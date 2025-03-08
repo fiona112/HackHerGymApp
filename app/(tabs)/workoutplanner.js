@@ -55,85 +55,90 @@ export default function WorkoutPlanner() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>🌸 Plan Your Workout</Text>
+    <>
+      {/* ✅ Header for Workout Planner */}
+      <Stack.Screen options={{ title: '🏋️‍♂️ Workout Planner' }} />
 
-      {/* Search Bar */}
-      <TextInput
-        placeholder="Search for an exercise..."
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-        style={styles.searchInput}
-        placeholderTextColor="#d6336c"
-      />
+      <View style={styles.container}>
+        <Text style={styles.title}>🌸 Plan Your Workout</Text>
 
-      {/* Muscle Group Selector */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.groupSelector}>
-        {muscleGroups.map((group) => (
-          <TouchableOpacity
-            key={group.name}
-            style={[styles.groupButton, selectedGroup === group.name && styles.selectedGroup]}
-            onPress={() => setSelectedGroup(group.name)}
-          >
-            <Text style={[styles.groupText, selectedGroup === group.name && styles.selectedGroupText]}>
-              {group.emoji} {group.name}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+        {/* Search Bar */}
+        <TextInput
+          placeholder="Search for an exercise..."
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          style={styles.searchInput}
+          placeholderTextColor="#d6336c"
+        />
 
-      {/* Available Exercises for Selected Muscle Group */}
-      <Text style={styles.subTitle}>Available Exercises</Text>
-      <FlatList
-        data={exercises[selectedGroup].filter((ex) => ex.toLowerCase().includes(searchQuery.toLowerCase()))}
-        keyExtractor={(item) => item}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.exerciseItem} onPress={() => addExercise(item)}>
-            <Text style={styles.exerciseText}>{item}</Text>
-            <Ionicons name="add-circle-outline" size={24} color="#ff4d94" />
-          </TouchableOpacity>
-        )}
-      />
-
-      {/* Selected Exercises */}
-      <Text style={styles.subTitle}>Your Workout Plan</Text>
-      <FlatList
-        data={selectedExercises}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.selectedItem}>
-            <Text style={styles.selectedText}>{item.exercise}</Text>
-            <TouchableOpacity onPress={() => removeExercise(item.id)}>
-              <Ionicons name="trash" size={24} color="red" />
+        {/* Muscle Group Selector */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.groupSelector}>
+          {muscleGroups.map((group) => (
+            <TouchableOpacity
+              key={group.name}
+              style={[styles.groupButton, selectedGroup === group.name && styles.selectedGroup]}
+              onPress={() => setSelectedGroup(group.name)}
+            >
+              <Text style={[styles.groupText, selectedGroup === group.name && styles.selectedGroupText]}>
+                {group.emoji} {group.name}
+              </Text>
             </TouchableOpacity>
-          </View>
-        )}
-      />
+          ))}
+        </ScrollView>
 
-      {/* Save Workout Plan */}
-      <TextInput
-        placeholder="Name your workout..."
-        value={workoutName}
-        onChangeText={setWorkoutName}
-        style={styles.input}
-        placeholderTextColor="#d6336c"
-      />
-      <TouchableOpacity style={styles.addButton} onPress={saveWorkoutPlan}>
-        <Text style={styles.addButtonText}>💾 Save Workout Plan</Text>
-      </TouchableOpacity>
+        {/* Available Exercises for Selected Muscle Group */}
+        <Text style={styles.subTitle}>Available Exercises</Text>
+        <FlatList
+          data={exercises[selectedGroup].filter((ex) => ex.toLowerCase().includes(searchQuery.toLowerCase()))}
+          keyExtractor={(item) => item}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={styles.exerciseItem} onPress={() => addExercise(item)}>
+              <Text style={styles.exerciseText}>{item}</Text>
+              <Ionicons name="add-circle-outline" size={24} color="#ff4d94" />
+            </TouchableOpacity>
+          )}
+        />
 
-      {/* Saved Workouts */}
-      <Text style={styles.subTitle}>Saved Workouts</Text>
-      <FlatList
-        data={savedWorkouts}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.savedWorkout}>
-            <Text style={styles.savedText}>{item.name}</Text>
-          </View>
-        )}
-      />
-    </View>
+        {/* Selected Exercises */}
+        <Text style={styles.subTitle}>Your Workout Plan</Text>
+        <FlatList
+          data={selectedExercises}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.selectedItem}>
+              <Text style={styles.selectedText}>{item.exercise}</Text>
+              <TouchableOpacity onPress={() => removeExercise(item.id)}>
+                <Ionicons name="trash" size={24} color="red" />
+              </TouchableOpacity>
+            </View>
+          )}
+        />
+
+        {/* Save Workout Plan */}
+        <TextInput
+          placeholder="Name your workout..."
+          value={workoutName}
+          onChangeText={setWorkoutName}
+          style={styles.input}
+          placeholderTextColor="#d6336c"
+        />
+        <TouchableOpacity style={styles.addButton} onPress={saveWorkoutPlan}>
+          <Text style={styles.addButtonText}>💾 Save Workout Plan</Text>
+        </TouchableOpacity>
+
+        {/* Saved Workouts */}
+        <Text style={styles.subTitle}>Saved Workouts</Text>
+        <FlatList
+          data={savedWorkouts}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.savedWorkout}>
+              <Text style={styles.savedText}>{item.name}</Text>
+            </View>
+          )}
+        />
+      </View>
+    </>
   );
 }
 
@@ -169,3 +174,4 @@ const styles = StyleSheet.create({
   savedWorkout: { padding: 15, backgroundColor: '#ffcce6', borderRadius: 10, marginVertical: 5 },
   savedText: { color: '#d6336c', fontSize: 18, fontWeight: 'bold' },
 });
+
