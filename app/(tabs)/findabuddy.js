@@ -5,7 +5,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Alert, Image, Animated, PanRe
 // Mock list of gym buddies with training focus
 export default function FindABuddy() {
   const [buddies, setBuddies] = useState([
-    { id: '1', name: 'Hailey', location: 'Arc', trainingFocus: 'Chest', image: 'https://via.placeholder.com/100' },
+    { id: '1', name: 'Hailey', location: 'Arc', trainingFocus: 'Chest', image:'https://via.placeholder.com/100'},
     { id: '2', name: 'Fiona', location: 'GoodLife Fitness', trainingFocus: 'Legs', image: 'https://via.placeholder.com/100' },
     { id: '3', name: 'Emma', location: 'Arc', trainingFocus: 'Arms', image: 'https://via.placeholder.com/100' },
     { id: '4', name: 'Jordan', location: 'Arc', trainingFocus: 'Back', image: 'https://via.placeholder.com/100' },
