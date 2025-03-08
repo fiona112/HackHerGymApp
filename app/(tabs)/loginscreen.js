@@ -1,6 +1,6 @@
 import { Stack } from 'expo-router';
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 
@@ -12,6 +12,7 @@ export default function LoginScreen() {
   const [isRegister, setIsRegister] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  // Authentication Logic (Login/Register)
   const handleAuth = async () => {
     if (!email.endsWith('@queensu.ca')) {
       setErrorMessage('You must use a valid @queensu.ca email address.');
@@ -25,21 +26,18 @@ export default function LoginScreen() {
 
     try {
       if (isRegister) {
-        // Check if user exists
         const existingUser = await AsyncStorage.getItem(email);
         if (existingUser) {
           setErrorMessage('User already exists. Try logging in.');
           return;
         }
 
-        // Save user credentials
         await AsyncStorage.setItem(email, JSON.stringify({ name, email, password }));
         await AsyncStorage.setItem('userEmail', email);
         await AsyncStorage.setItem('userName', name);
 
         alert('Account created! 🎉');
       } else {
-        // Check if user exists & login
         const storedUser = await AsyncStorage.getItem(email);
         if (!storedUser) {
           setErrorMessage('User not found. Please register.');
@@ -52,7 +50,6 @@ export default function LoginScreen() {
           return;
         }
 
-        // Store session data
         await AsyncStorage.setItem('userEmail', email);
         await AsyncStorage.setItem('userName', userData.name);
 
@@ -63,6 +60,34 @@ export default function LoginScreen() {
       setErrorMessage('');
     } catch (error) {
       setErrorMessage('An error occurred. Please try again.');
+    }
+  };
+
+  // Function to Delete an Account
+  const handleDeleteAccount = async () => {
+    if (!email) {
+      Alert.alert('Error', 'Enter an email to delete.');
+      return;
+    }
+
+    try {
+      const storedUser = await AsyncStorage.getItem(email);
+      if (!storedUser) {
+        Alert.alert('Error', 'User not found.');
+        return;
+      }
+
+      await AsyncStorage.removeItem(email);
+      await AsyncStorage.removeItem('userEmail');
+      await AsyncStorage.removeItem('userName');
+
+      Alert.alert('Deleted', 'Your account has been removed.');
+      setEmail('');
+      setPassword('');
+      setName('');
+      setErrorMessage('');
+    } catch (error) {
+      Alert.alert('Error', 'Something went wrong while deleting the account.');
     }
   };
 
@@ -113,6 +138,11 @@ export default function LoginScreen() {
           </Text>
         </TouchableOpacity>
 
+        {/* 🔥 Delete Account Button */}
+        <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAccount}>
+          <Text style={styles.deleteButtonText}>Delete My Account</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity style={styles.backButton} onPress={() => router.push('/')}> 
           <Text style={styles.backButtonText}>⬅️ Back to Home</Text>
         </TouchableOpacity>
@@ -152,6 +182,23 @@ const styles = StyleSheet.create({
   },
   authButtonText: { color: 'white', fontSize: 20, fontWeight: 'bold' },
   switchText: { color: '#ff4d94', fontSize: 16, marginTop: 15 },
+
+  deleteButton: {
+    backgroundColor: '#f44336',
+    paddingVertical: 15,
+    paddingHorizontal: 40,
+    borderRadius: 30,
+    width: '90%',
+    alignItems: 'center',
+    marginTop: 20,
+    shadowColor: '#f44336',
+    shadowOffset: { width: 2, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  deleteButtonText: { color: 'white', fontSize: 20, fontWeight: 'bold' },
+
   backButton: { marginTop: 30 },
   backButtonText: { color: '#ff4d94', fontSize: 18, fontWeight: 'bold' },
 });
