@@ -1,118 +1,109 @@
 import { Stack } from 'expo-router';
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const [userEmail, setUserEmail] = useState(null);
+  const [userName, setUserName] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Check if user is logged in (fetch stored user session)
+  useEffect(() => {
+    const checkUser = async () => {
+      try {
+        const storedEmail = await AsyncStorage.getItem('userEmail');
+        const storedName = await AsyncStorage.getItem('userName');
+
+        if (storedEmail && storedName) {
+          setUserEmail(storedEmail);
+          setUserName(storedName);
+        }
+      } catch (error) {
+        console.error("Error retrieving user data:", error);
+      }
+      setLoading(false);
+    };
+
+    checkUser();
+  }, []);
+
+  // Logout function (Clears user session)
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('userEmail');
+    await AsyncStorage.removeItem('userName');
+    setUserEmail(null);
+    setUserName(null);
+    router.push('/loginscreen'); // Redirect to login page after logout
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#ff4d94" />
+      </View>
+    );
+  }
 
   return (
     <>
       <Stack.Screen options={{ title: '💖 Gym Tracker' }} />
 
-      <ImageBackground
-        source={{ uri: 'https://images.unsplash.com/photo-1576678927484-cc9079570885' }}
-        style={styles.background}
-      >
-        <View style={styles.overlay}>
-          {/* BIG LOGIN/REGISTER BUTTON */}
+      <View style={styles.container}>
+        {/* Show user's name at the top if logged in */}
+        {userName ? (
+          <Text style={styles.welcomeText}>Welcome, {userName}! 👋</Text>
+        ) : (
           <TouchableOpacity style={styles.loginButton} onPress={() => router.push('/loginscreen')}>
             <Text style={styles.loginButtonText}>🔐 Login / Register</Text>
           </TouchableOpacity>
+        )}
 
-          <Text style={styles.title}>💖 Gym Tracker</Text>
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/workoutplanner')}>
+          <Text style={styles.buttonText}>📋 Workout Planner</Text>
+        </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button} onPress={() => router.push('/workoutplanner')}>
-            <Text style={styles.buttonText}>📋 Workout Planner</Text>
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/workouttracker')}>
+          <Text style={styles.buttonText}>📅 Workout Tracker</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/findabuddy')}>
+          <Text style={styles.buttonText}>🤝 Find A Buddy</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/goals')}>
+          <Text style={styles.buttonText}>🎯 Goals</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/gymstatus')}>
+          <Text style={styles.buttonText}>📊 Gym Status</Text>
+        </TouchableOpacity>
+
+        {userName && (
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Text style={styles.logoutButtonText}>🚪 Logout</Text>
           </TouchableOpacity>
-
-          <TouchableOpacity style={styles.button} onPress={() => router.push('/workouttracker')}>
-            <Text style={styles.buttonText}>📅 Workout Tracker</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.button} onPress={() => router.push('/findabuddy')}>
-            <Text style={styles.buttonText}>🤝 Find A Buddy</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.button} onPress={() => router.push('/goals')}>
-            <Text style={styles.buttonText}>🎯 Goals</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.button} onPress={() => router.push('/gymstatus')}>
-            <Text style={styles.buttonText}>📊 Gym Status</Text>
-          </TouchableOpacity>
-        </View>
-      </ImageBackground>
+        )}
+      </View>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'center',
-  },
-  
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(255, 192, 203, 0.85)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    borderRadius: 20,
-  },
+  container: { flex: 1, backgroundColor: '#ffe6f2', justifyContent: 'center', alignItems: 'center', padding: 20 },
 
-  title: {
-    fontSize: 45,
-    fontWeight: 'bold',
-    color: '#ff4d94',
-    marginBottom: 30,
-    textAlign: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.2)',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 3,
-  },
+  welcomeText: { fontSize: 24, fontWeight: 'bold', color: '#ff4d94', marginBottom: 20, textAlign: 'center' },
 
-  loginButton: {
-    backgroundColor: '#ff4d94',
-    paddingVertical: 20,
-    paddingHorizontal: 40,
-    borderRadius: 30,
-    marginBottom: 30,
-    width: '90%',
-    alignItems: 'center',
-    shadowColor: '#ff4d94',
-    shadowOffset: { width: 2, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 5,
-  },
+  loginButton: { backgroundColor: '#ff4d94', paddingVertical: 20, paddingHorizontal: 40, borderRadius: 30, marginBottom: 30, width: '90%', alignItems: 'center' },
+  loginButtonText: { color: '#ffffff', fontSize: 22, fontWeight: 'bold' },
 
-  loginButtonText: {
-    color: '#ffffff',
-    fontSize: 22,
-    fontWeight: 'bold',
-  },
+  button: { backgroundColor: '#ff99c8', paddingVertical: 15, paddingHorizontal: 30, borderRadius: 30, marginVertical: 10, width: '80%', alignItems: 'center' },
+  buttonText: { color: '#ffffff', fontSize: 20, fontWeight: 'bold' },
 
-  button: {
-    backgroundColor: '#ff99c8',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 30,
-    marginVertical: 10,
-    width: '80%',
-    alignItems: 'center',
-    shadowColor: '#ff4d94',
-    shadowOffset: { width: 2, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 5,
-  },
+  logoutButton: { backgroundColor: '#ff99c8', paddingVertical: 10, paddingHorizontal: 20, borderRadius: 20, marginTop: 20 },
+  logoutButtonText: { color: 'white', fontSize: 16, fontWeight: 'bold' },
 
-  buttonText: {
-    color: '#ffffff',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
+  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#ffe6f2' },
 });
