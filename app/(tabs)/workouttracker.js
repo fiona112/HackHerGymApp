@@ -1,4 +1,3 @@
-import { Stack } from 'expo-router';
 import React, { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ScrollView, Alert, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -78,61 +77,142 @@ export default function WorkoutTracker() {
   };
 
   return (
-    <>
-      {/* ✅ Custom Header Title */}
-      <Stack.Screen options={{ title: '🏋️ Workout Tracker' }} />
+    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 30 }}>
+      <Text style={styles.title}>🌸 Workout Tracker</Text>
 
-      <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 30 }}>
-        <Text style={styles.title}>🌸 Workout Tracker</Text>
+      {/* Calendar */}
+      <Calendar
+        onDayPress={(day) => setSelectedDate(day.dateString)}
+        markedDates={{
+          ...Object.keys(trackedWorkouts).reduce((acc, date) => {
+            acc[date] = { marked: true, dotColor: '#ff4d94' };
+            return acc;
+          }, {}),
+          [selectedDate]: { selected: true, selectedColor: '#ff4d94' },
+        }}
+        theme={{ calendarBackground: '#ffe6f2', textSectionTitleColor: '#d6336c' }}
+      />
 
-        {/* Calendar */}
-        <Calendar
-          onDayPress={(day) => setSelectedDate(day.dateString)}
-          markedDates={{
-            ...Object.keys(trackedWorkouts).reduce((acc, date) => {
-              acc[date] = { marked: true, dotColor: '#ff4d94' };
-              return acc;
-            }, {}),
-            [selectedDate]: { selected: true, selectedColor: '#ff4d94' },
-          }}
-          theme={{ calendarBackground: '#ffe6f2', textSectionTitleColor: '#d6336c' }}
-        />
+      <Text style={styles.subTitle}>{selectedDate ? `Selected Date: ${selectedDate}` : 'Pick a date to track a workout'}</Text>
 
-        <Text style={styles.subTitle}>{selectedDate ? `Selected Date: ${selectedDate}` : 'Pick a date to track a workout'}</Text>
+       {/* Saved Workouts Section */}
+       <Text style={styles.subTitle}>💾 Choose a Saved Workout</Text>
+      {savedWorkouts.map((workout) => (
+        <View key={workout.id} style={styles.muscleGroupContainer}>
+          <TouchableOpacity style={styles.muscleGroupItem} onPress={() => toggleSavedWorkout(workout.id)}>
+            <Text style={styles.muscleGroupText}>{workout.name}</Text>
+            <Ionicons name={expandedSavedWorkouts[workout.id] ? "chevron-up" : "chevron-down"} size={20} color="#d6336c" />
+          </TouchableOpacity>
 
-        {/* Saved Workouts Section */}
-        <Text style={styles.subTitle}>💾 Choose a Saved Workout</Text>
-        {savedWorkouts.map((workout) => (
-          <View key={workout.id} style={styles.muscleGroupContainer}>
-            <TouchableOpacity style={styles.muscleGroupItem} onPress={() => toggleSavedWorkout(workout.id)}>
-              <Text style={styles.muscleGroupText}>{workout.name}</Text>
-              <Ionicons name={expandedSavedWorkouts[workout.id] ? "chevron-up" : "chevron-down"} size={20} color="#d6336c" />
-            </TouchableOpacity>
+          {/* Dropdown for Saved Workouts */}
+          {expandedSavedWorkouts[workout.id] && (
+            <View style={styles.exerciseDropdown}>
+              <Text style={styles.exerciseDropdownTitle}>🏋️ Exercises in {workout.name}</Text>
+              {workout.exercises.map((exercise, index) => (
+                <TouchableOpacity key={index} style={styles.exerciseItem} onPress={() => startWorkout(exercise)}>
+                  <Text style={styles.exerciseText}>{exercise}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+        </View>
+      ))}
 
-            {/* Dropdown for Saved Workouts */}
-            {expandedSavedWorkouts[workout.id] && (
-              <View style={styles.exerciseDropdown}>
-                <Text style={styles.exerciseDropdownTitle}>🏋️ Exercises in {workout.name}</Text>
-                {workout.exercises.map((exercise, index) => (
-                  <TouchableOpacity key={index} style={styles.exerciseItem} onPress={() => startWorkout(exercise)}>
-                    <Text style={styles.exerciseText}>{exercise}</Text>
+      {/* Muscle Groups */}
+      <Text style={styles.subTitle}>💪 Choose Muscle Group</Text>
+      {Object.keys(muscleGroups).map((group) => (
+        <View key={group} style={styles.muscleGroupContainer}>
+          <TouchableOpacity style={styles.muscleGroupItem} onPress={() => toggleMuscleGroup(group)}>
+            <Text style={styles.muscleGroupText}>{group}</Text>
+            <Ionicons name={expandedMuscleGroups[group] ? "chevron-up" : "chevron-down"} size={20} color="#d6336c" />
+          </TouchableOpacity>
+
+          {/* Dropdown for Exercises */}
+          {expandedMuscleGroups[group] && (
+            <View style={styles.exerciseDropdown}>
+              <Text style={styles.exerciseDropdownTitle}>💪 Exercises in {group}</Text>
+              <FlatList
+                data={muscleGroups[group]}
+                keyExtractor={(item) => item}
+                renderItem={({ item }) => (
+                  <TouchableOpacity style={styles.exerciseItem} onPress={() => startWorkout(item)}>
+                    <Text style={styles.exerciseText}>{item}</Text>
                   </TouchableOpacity>
-                ))}
-              </View>
-            )}
-          </View>
-        ))}
-      </ScrollView>
-    </>
+                )}
+              />
+            </View>
+          )}
+        </View>
+      ))}
+
+      {/* Active Workout Session */}
+      {currentExercise && (
+        <View style={styles.workoutSession}>
+          <Text style={styles.subTitle}>🚀 Tracking: {currentExercise}</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter reps"
+            keyboardType="numeric"
+            value={reps}
+            onChangeText={setReps}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Enter weight (lbs)"
+            keyboardType="numeric"
+            value={weight}
+            onChangeText={setWeight}
+          />
+          <TouchableOpacity style={styles.addButton} onPress={logSet}>
+            <Text style={styles.addButtonText}>Add Set</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {/* Display Logged Workouts */}
+      {sets.length > 0 && (
+        <View style={styles.loggedWorkouts}>
+          <Text style={styles.subTitle}>📋 Workout Progress</Text>
+          {Object.entries(
+            sets.reduce((acc, { exercise, reps, weight }) => {
+              acc[exercise] = acc[exercise] || [];
+              acc[exercise].push({reps, weight});
+              return acc;
+            }, {})
+          ).map(([exercise, repsList]) => (
+            <View key={exercise} style={styles.exerciseLog}>
+              <Text style={styles.exerciseLogTitle}>🏋️ {exercise}</Text>
+              {repsList.map(({ reps, weight }, index) => (
+                <Text key={index} style={styles.setLog}>
+                    Set {index + 1}: {reps} reps {weight && weight !== '' ? `@ ${weight} lbs` : ''}
+                </Text>
+            ))}
+
+            </View>
+          ))}
+        </View>
+      )}
+
+      {/* End & Save Workout Button */}
+      {sets.length > 0 && (
+        <TouchableOpacity style={styles.endWorkoutButton} onPress={endWorkoutAndSave}>
+          <Text style={styles.addButtonText}>🏁 End & Save Workout</Text>
+        </TouchableOpacity>
+      )}
+    </ScrollView>
   );
 }
+
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: '#ffe6f2' },
   title: { fontSize: 28, fontWeight: 'bold', color: '#ff4d94', textAlign: 'center', marginBottom: 15 },
   subTitle: { fontSize: 20, fontWeight: 'bold', color: '#d6336c', textAlign: 'center', marginVertical: 10 },
 
-  muscleGroupContainer: { marginBottom: 10 },
+  muscleGroupContainer: {
+    marginBottom: 10,
+  },
   muscleGroupItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -141,7 +221,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
   },
-  muscleGroupText: { fontSize: 18, fontWeight: 'bold', color: '#d6336c' },
+  muscleGroupText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#d6336c',
+  },
   exerciseDropdown: {
     marginTop: 5,
     padding: 10,
@@ -150,11 +234,80 @@ const styles = StyleSheet.create({
     borderLeftWidth: 3,
     borderLeftColor: '#ff4d94',
   },
-  exerciseDropdownTitle: { fontSize: 16, fontWeight: 'bold', color: '#d6336c', marginBottom: 5 },
-  exerciseItem: { padding: 10, marginVertical: 3, backgroundColor: '#ffd6e0', borderRadius: 8 },
-  exerciseText: { fontSize: 16, color: '#d6336c' },
-  loggedWorkouts: { marginTop: 20, padding: 15, backgroundColor: '#ffe6f2', borderRadius: 10 },
-  endWorkoutButton: { backgroundColor: '#ff4d94', padding: 15, borderRadius: 10, alignItems: 'center', marginTop: 20 },
-  addButtonText: { color: 'white', fontSize: 18, fontWeight: 'bold' },
+  exerciseDropdownTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#d6336c',
+    marginBottom: 5,
+  },
+  exerciseItem: {
+    padding: 10,
+    marginVertical: 3,
+    backgroundColor: '#ffd6e0',
+    borderRadius: 8,
+  },
+  exerciseText: {
+    fontSize: 16,
+    color: '#d6336c',
+  },
+  workoutSession: {
+    marginTop: 15,
+    padding: 15,
+    backgroundColor: '#ffb3d9',
+    borderRadius: 10,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#d6336c',
+    padding: 10,
+    marginVertical: 10,
+    borderRadius: 10,
+    backgroundColor: '#fff',
+  },
+  addButton: {
+    backgroundColor: '#ff4d94',
+    padding: 12,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  addButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  loggedWorkouts: {
+    marginTop: 20,
+    padding: 15,
+    backgroundColor: '#ffe6f2',
+    borderRadius: 10,
+  },
+  exerciseLog: {
+    marginBottom: 10,
+    padding: 10,
+    backgroundColor: '#ffcce6',
+    borderRadius: 10,
+  },
+  exerciseLogTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#d6336c',
+    marginBottom: 5,
+  },
+  setLog: {
+    fontSize: 16,
+    color: '#d6336c',
+  },
+  endWorkoutButton: {
+    backgroundColor: '#ff4d94',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  addButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    },
 });
-
