@@ -1,8 +1,7 @@
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Animated } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -52,7 +51,6 @@ export default function HomeScreen() {
       <Stack.Screen options={{ title: '💖 Gym Tracker' }} />
 
       <View style={styles.container}>
-        {/* Show user's name at the top if logged in */}
         {userName ? (
           <Text style={styles.welcomeText}>Welcome, {userName}! 👋</Text>
         ) : (
@@ -61,30 +59,10 @@ export default function HomeScreen() {
           </TouchableOpacity>
         )}
 
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/workoutplanner')}>
-          <Text style={styles.buttonText}>📋 Workout Planner</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/workouttracker')}>
-          <Text style={styles.buttonText}>📅 Workout Tracker</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/findabuddy')}>
-          <Text style={styles.buttonText}>🤝 Find A Buddy</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/goals')}>
-          <Text style={styles.buttonText}>🎯 Goals</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/gymstatus')}>
-          <Text style={styles.buttonText}>📊 Gym Status</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/mealtrack')}>
-          <Text style={styles.buttonText}>🍔 Meal Tracker</Text>
-        </TouchableOpacity>
-
+        {/* Neon Highlighted Buttons */}
+        {menuItems.map((item, index) => (
+          <NeonButton key={index} title={item.title} icon={item.icon} onPress={() => router.push(item.route)} />
+        ))}
 
         {userName && (
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
@@ -96,19 +74,82 @@ export default function HomeScreen() {
   );
 }
 
+// Menu items with titles, routes, and icons
+const menuItems = [
+  { title: "📋 Workout Planner", route: "/workoutplanner", icon: "📋" },
+  { title: "📅 Workout Tracker", route: "/workouttracker", icon: "📅" },
+  { title: "🤝 Find A Buddy", route: "/findabuddy", icon: "🤝" },
+  { title: "🎯 Goals", route: "/goals", icon: "🎯" },
+  { title: "📊 Gym Status", route: "/gymstatus", icon: "📊" },
+  { title: "🍔 Meal Tracker", route: "/mealtrack", icon: "🍔" },
+];
+
+// Neon Button Component (Animated Glow Effect)
+const NeonButton = ({ title, onPress }) => {
+  const scaleAnim = useState(new Animated.Value(1))[0];
+
+  const handlePressIn = () => {
+    Animated.spring(scaleAnim, { toValue: 0.95, useNativeDriver: true }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(scaleAnim, { toValue: 1, useNativeDriver: true }).start();
+    onPress();
+  };
+
+  return (
+    <Animated.View style={[styles.neonButtonContainer, { transform: [{ scale: scaleAnim }] }]}>
+      <TouchableOpacity
+        style={styles.neonButton}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.neonButtonText}>{title}</Text>
+      </TouchableOpacity>
+    </Animated.View>
+  );
+};
+
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#ffe6f2', justifyContent: 'center', alignItems: 'center', padding: 20 },
 
-  welcomeText: { fontSize: 24, fontWeight: 'bold', color: '#ff4d94', marginBottom: 20, textAlign: 'center' },
+  welcomeText: { fontSize: 26, fontWeight: 'bold', color: '#ff4d94', marginBottom: 25, textAlign: 'center' },
 
-  loginButton: { backgroundColor: '#ff4d94', paddingVertical: 20, paddingHorizontal: 40, borderRadius: 30, marginBottom: 30, width: '90%', alignItems: 'center' },
+  loginButton: { backgroundColor: '#ff4d94', paddingVertical: 15, paddingHorizontal: 40, borderRadius: 30, marginBottom: 30, width: '90%', alignItems: 'center' },
   loginButtonText: { color: '#ffffff', fontSize: 22, fontWeight: 'bold' },
 
-  button: { backgroundColor: '#ff99c8', paddingVertical: 15, paddingHorizontal: 30, borderRadius: 30, marginVertical: 10, width: '80%', alignItems: 'center' },
-  buttonText: { color: '#ffffff', fontSize: 20, fontWeight: 'bold' },
+  neonButtonContainer: {
+    marginVertical: 8,
+    borderRadius: 25,
+    width: '85%',
+    shadowColor: '#ff4d94',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 1,
+    shadowRadius: 10,
+  },
 
-  logoutButton: { backgroundColor: '#ff99c8', paddingVertical: 10, paddingHorizontal: 20, borderRadius: 20, marginTop: 20 },
-  logoutButtonText: { color: 'white', fontSize: 16, fontWeight: 'bold' },
+  neonButton: {
+    backgroundColor: '#ff99c8',
+    paddingVertical: 18,
+    borderRadius: 25,
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: '#ff4d94',
+  },
+
+  neonButtonText: {
+    color: '#ffffff',
+    fontSize: 22,
+    fontWeight: 'bold',
+    textShadowColor: 'rgba(255, 77, 148, 1)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 8,
+  },
+
+  logoutButton: { backgroundColor: '#ff99c8', paddingVertical: 10, paddingHorizontal: 20, borderRadius: 20, marginTop: 30 },
+  logoutButtonText: { color: 'white', fontSize: 18, fontWeight: 'bold' },
 
   loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#ffe6f2' },
 });
+
