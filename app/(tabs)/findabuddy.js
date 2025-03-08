@@ -1,14 +1,13 @@
-import { Stack } from 'expo-router';
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, Image, Animated, PanResponder } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Image, Animated, PanResponder, TextInput, FlatList } from 'react-native';
 
 // Mock list of gym buddies with training focus
 export default function FindABuddy() {
   const [buddies, setBuddies] = useState([
-    { id: '1', name: 'Hailey', location: 'Arc', trainingFocus: 'Chest', image:'https://via.placeholder.com/100'},
+    { id: '1', name: 'Hailey', location: 'Arc', trainingFocus: 'Chest', image: 'https://via.placeholder.com/100' },
     { id: '2', name: 'Fiona', location: 'GoodLife Fitness', trainingFocus: 'Legs', image: 'https://via.placeholder.com/100' },
     { id: '3', name: 'Emma', location: 'Arc', trainingFocus: 'Arms', image: 'https://via.placeholder.com/100' },
-    { id: '4', name: 'Jordan', location: 'Arc', trainingFocus: 'Back', image: 'https://via.placeholder.com/100' },
+    { id: '4', name: 'bob the builder', location: 'Arc', trainingFocus: 'Back', image: 'https://via.placeholder.com/100' },
   ]);
 
   const [currentBuddyIndex, setCurrentBuddyIndex] = useState(0);
@@ -17,6 +16,7 @@ export default function FindABuddy() {
   const [message, setMessage] = useState(''); // To store the message input
   const [messages, setMessages] = useState([]); // To store sent messages for the matched buddy
 
+  // Gesture recognition for swipe
   const pan = new Animated.ValueXY();
 
   const handleSwipe = (direction) => {
@@ -35,12 +35,11 @@ export default function FindABuddy() {
 
     if (currentBuddyIndex + 1 >= buddies.length) {
       setIsEndOfList(true);
-      setIsEndOfList(true);
     } else {
       setCurrentBuddyIndex(currentBuddyIndex + 1);
     }
 
-    pan.setValue({ x: 0, y: 0 });
+    pan.setValue({ x: 0, y: 0 }); // Reset pan after swipe
   };
 
   const handlePanResponderMove = Animated.event([null, { dx: pan.x, dy: pan.y }], { useNativeDriver: false });
@@ -48,9 +47,7 @@ export default function FindABuddy() {
   const handlePanResponderRelease = (e, gestureState) => {
     if (gestureState.dx > 150) {
       handleSwipe('right');
-      handleSwipe('right');
     } else if (gestureState.dx < -150) {
-      handleSwipe('left');
       handleSwipe('left');
     } else {
       Animated.spring(pan, { toValue: { x: 0, y: 0 }, useNativeDriver: true }).start();
@@ -174,17 +171,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffe6f2',
     justifyContent: 'center', 
     alignItems: 'center',
-    alignItems: 'center',
   },
   title: {
-    fontSize: 42,
-    fontWeight: '600',
     fontSize: 42,
     fontWeight: '600',
     color: '#ff4d94',
     textAlign: 'center',
     marginBottom: 30,
-    fontFamily: 'Poppins',
     fontFamily: 'Poppins',
   },
   buddyItem: {
@@ -202,22 +195,16 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
-    alignItems: 'center',
   },
   buddyInfo: { 
     flex: 1, 
     marginLeft: 20, 
     alignItems: 'center',
-    alignItems: 'center',
   },
   buddyText: {
     fontSize: 22,
     fontWeight: '500',
-    fontSize: 22,
-    fontWeight: '500',
     color: '#d6336c',
-    fontFamily: 'Poppins',
-    textAlign: 'center',
     fontFamily: 'Poppins',
     textAlign: 'center',
     marginBottom: 10,
@@ -226,7 +213,6 @@ const styles = StyleSheet.create({
 
   buttonsContainer: { 
     flexDirection: 'row', 
-    justifyContent: 'center',
     justifyContent: 'center',
     marginTop: 30,
   },
