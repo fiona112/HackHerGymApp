@@ -48,7 +48,7 @@ export default function HomeScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ title: '💖 Gym Tracker' }} />
+      <Stack.Screen options={{ title: '💖 ARChieve' }} />
 
       <View style={styles.container}>
         {userName ? (
